@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: polypress
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: polypress
+          imagePullPolicy: "Always"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: polypress
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: polypress
+  annotations:
+    alb.ingress.kubernetes.io/group.name: "test-external"
+spec:
+  rules:
+    - host: uat-polypress.cme.openhbx.org
+      http:
+        paths:
+         - path: /*
+           backend:
+             serviceName: polypress
+             servicePort: 3000
